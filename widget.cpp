@@ -22,7 +22,7 @@ Widget::Widget(QWidget *parent)
 
             connect(m_socket,&QTcpSocket::disconnected,[=]()
             {
-               m_socket->disconnect();
+               m_socket->close();
                m_socket->deleteLater();
                qDebug()<<"disconnet ok";
             });
@@ -40,5 +40,15 @@ void Widget::openBtnFunc()
     QString str=ui->portLineEdit->text();
     m_server->listen(QHostAddress::Any,str.toUShort());
     ui->openBtn->setDisabled(true);
+}
+
+void Widget::sendBtnFunc()
+{
+    QString str=ui->msgSendtextEdit->toPlainText();
+    if(m_socket->isWritable())
+    {
+        m_socket->write(str.toUtf8());
+        ui->msgReceiveTextEdit->append("服务端say："+str);
+    }
 }
 

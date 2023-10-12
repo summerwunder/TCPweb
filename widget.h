@@ -22,5 +22,6 @@ private:
     QTcpSocket *m_socket;
 
     void openBtnFunc();
+    void sendBtnFunc();
 };
 #endif // WIDGET_H
