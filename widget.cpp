@@ -9,7 +9,7 @@ Widget::Widget(QWidget *parent)
     this->setWindowTitle("Server");
     m_server=new QTcpServer(this);
     connect(ui->openBtn,&QPushButton::clicked,this,&Widget::openBtnFunc);
-
+    connect(ui->sendBtn,&QPushButton::clicked,this,&Widget::sendBtnFunc);
     connect(this->m_server,&QTcpServer::newConnection,[=]()
     {
         m_socket=m_server->nextPendingConnection();
@@ -19,7 +19,7 @@ Widget::Widget(QWidget *parent)
         {
             QByteArray msgArray;
             msgArray=m_socket->readAll();
-            ui->msgReceiveTextEdit->append("客户端say"+msgArray);
+            ui->msgReceiveTextEdit->append("客户端say："+msgArray);
 
             connect(m_socket,&QTcpSocket::disconnected,[=]()
             {
@@ -51,10 +51,7 @@ void Widget::openBtnFunc()
 void Widget::sendBtnFunc()
 {
     QString str=ui->msgSendtextEdit->toPlainText();
-    if(m_socket->isWritable())
-    {
-        m_socket->write(str.toUtf8());
-        ui->msgReceiveTextEdit->append("服务端say："+str);
-    }
+    m_socket->write(str.toUtf8());
+    ui->msgReceiveTextEdit->append("服务端say："+str);
 }
 
