@@ -18,5 +18,9 @@ public:
 
 private:
     Ui::Widget *ui;
+    QTcpServer *m_server;
+    QTcpSocket *m_socket;
+
+    void openBtnFunc();
 };
 #endif // WIDGET_H
