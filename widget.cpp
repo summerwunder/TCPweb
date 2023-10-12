@@ -8,6 +8,26 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
     m_server=new QTcpServer(this);
     connect(ui->openBtn,&QPushButton::clicked,this,&Widget::openBtnFunc);
+
+    connect(this->m_server,&QTcpServer::newConnection,[=]()
+    {
+        m_socket=m_server->nextPendingConnection();
+
+        qDebug()<<"connect ok";
+        connect(m_socket,&QTcpSocket::readyRead,[=]()
+        {
+            QByteArray msgArray;
+            msgArray=m_socket->readAll();
+            ui->msgReceiveTextEdit->append("客户端say"+msgArray);
+
+            connect(m_socket,&QTcpSocket::disconnected,[=]()
+            {
+               m_socket->disconnect();
+               m_socket->deleteLater();
+               qDebug()<<"disconnet ok";
+            });
+        });
+    });
 }
 
 Widget::~Widget()
