@@ -6,6 +6,7 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Server");
     m_server=new QTcpServer(this);
     connect(ui->openBtn,&QPushButton::clicked,this,&Widget::openBtnFunc);
 
@@ -38,6 +39,11 @@ Widget::~Widget()
 void Widget::openBtnFunc()
 {
     QString str=ui->portLineEdit->text();
+    if(str.isEmpty())
+    {
+        QMessageBox::information(this,"warning","no port edit");
+        return;
+    }
     m_server->listen(QHostAddress::Any,str.toUShort());
     ui->openBtn->setDisabled(true);
 }
